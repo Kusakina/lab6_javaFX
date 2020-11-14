@@ -248,7 +248,7 @@ public class ArrayTabulatedFunction implements TabulatedFunction, Serializable, 
         int index = 0;
         double xPoint = point.getAbs();
         //чекнуть совпадение
-        for(; xPoint > mas[index].getAbs();++index);
+        for(; index<Size && xPoint > mas[index].getAbs();++index);
         int index2 = index;
         if ((index>0&&Math.abs(point.getAbs() - mas[index2 - 1].getAbs()) < Double.MIN_VALUE) )
             throw new InappropriateFunctionPointException();

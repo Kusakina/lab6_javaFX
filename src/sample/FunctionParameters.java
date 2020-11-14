@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import functions.ArrayTabulatedFunction;
+import functions.TabulatedFunction;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +19,7 @@ import javafx.stage.Stage;
 
 public class FunctionParameters {
 
-    static ArrayTabulatedFunction arrayTabulatedFunction = null;
+    static TabulatedFunction tabulatedFunction = null;
     private static double leftBorder;
     private static double rightBorder;
     private static int pointsCounter;
@@ -54,7 +55,8 @@ public class FunctionParameters {
                 leftBorder = Double.parseDouble(Left_Domain_field.getText());
                 rightBorder = Double.parseDouble(Right_Domain_field.getText());
                 pointsCounter = spinnerCount.getValue();
-                arrayTabulatedFunction = new ArrayTabulatedFunction(leftBorder, rightBorder, pointsCounter);
+                //поменять по заданию 2
+                tabulatedFunction = new ArrayTabulatedFunction(leftBorder, rightBorder, pointsCounter);
                 Stage stage = (Stage) OKButton.getScene().getWindow();
                 stage.close();
             } catch (NumberFormatException e) {
@@ -80,7 +82,7 @@ public class FunctionParameters {
         return spinnerCount.getValue();
     }
 
-    public static ArrayTabulatedFunction FunctionParameterShow() {
+    public static TabulatedFunction FunctionParameterShow() {
         FXMLLoader fxmlLoader = new FXMLLoader(FunctionParameters.class.getResource("FunctionParameters.fxml"));
         Parent root = null;
         try {
@@ -94,7 +96,7 @@ public class FunctionParameters {
         stage.setResizable(false);
         stage.setOnCloseRequest(Event::consume);
         stage.showAndWait();
-        return arrayTabulatedFunction;
+        return tabulatedFunction;
     }
 }
 

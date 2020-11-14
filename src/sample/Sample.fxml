@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="445.0" prefWidth="500.0" style="-fx-background-color: #FA8072;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Sample">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="445.0" prefWidth="500.0" style="-fx-background-color: #FA8072;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Sample">
    <children>
       <Button fx:id="DeleteButton" layoutX="51.0" layoutY="399.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="Delete point" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="51.0">
          <font>
@@ -23,7 +16,7 @@
             <Font name="System Bold Italic" size="12.0" />
          </font>
       </Button>
-      <MenuBar blendMode="LIGHTEN" cache="true" layoutY="-1.0" prefHeight="31.0" prefWidth="500.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
+      <MenuBar blendMode="LIGHTEN" cache="true" layoutY="30.0" prefHeight="0.0" prefWidth="500.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
         <menus>
           <Menu fx:id="File_menu" mnemonicParsing="false" text="File">
             <items>
@@ -44,19 +37,11 @@
       </MenuBar>
       <TextField fx:id="X_field" layoutX="319.0" layoutY="361.0" prefHeight="25.0" prefWidth="71.0" promptText="X" AnchorPane.bottomAnchor="59.0" AnchorPane.rightAnchor="110.0" />
       <TextField fx:id="Y_field" layoutX="416.0" layoutY="361.0" prefHeight="18.0" prefWidth="71.0" promptText="Y" AnchorPane.bottomAnchor="59.0" AnchorPane.rightAnchor="13.0" />
-      <ScrollPane hbarPolicy="NEVER" layoutX="12.0" layoutY="49.0" mouseTransparent="true" opacity="0.76" prefHeight="303.0" prefWidth="476.0">
-        <content>
-          <AnchorPane fx:id="scroller" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="303.0" prefWidth="474.0">
-               <children>
-                  <TableView minHeight="-Infinity" minWidth="-Infinity" prefHeight="303.0" prefWidth="460.0" AnchorPane.topAnchor="0.0">
-                    <columns>
-                      <TableColumn fx:id="X_values" prefWidth="230.66665649414062" text="X" />
-                      <TableColumn fx:id="Y_values" prefWidth="228.33334350585938" text="Y" />
-                    </columns>
-                  </TableView>
-               </children>
-            </AnchorPane>
-        </content>
-      </ScrollPane>
+       <TableView fx:id="pointTableView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="303.0" prefWidth="460.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="25">
+           <columns>
+               <TableColumn fx:id="X_values" maxWidth="Infinity" prefWidth="230" text="X" />
+               <TableColumn fx:id="Y_values" maxWidth="Infinity" prefWidth="230" text="Y" />
+           </columns>
+       </TableView>
    </children>
 </AnchorPane>

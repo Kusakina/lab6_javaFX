@@ -4,7 +4,10 @@ import java.io.*;
 import java.util.Locale;
 import java.util.Scanner;
 
-public abstract class TabulatedFunctions {
+public class TabulatedFunctions {
+    private TabulatedFunctions(){
+
+    }
     public static TabulatedFunction tabulate(Function function, double leftX, double rightX, int pointsCount) throws IllegalArgumentException{
         if(leftX< function.getLeftDomainBorder()||rightX>function.getRightDomainBorder())
             throw new IllegalArgumentException("Incorrect domain's value");
