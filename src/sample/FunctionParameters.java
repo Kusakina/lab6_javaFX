@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import functions.ArrayTabulatedFunction;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -38,7 +39,7 @@ public class FunctionParameters {
     private Button OKButton;
 
     @FXML
-    private Button CanselButton;
+    private Button CancelButton;
 
     @FXML
     private Spinner<Integer> spinnerCount;
@@ -64,7 +65,7 @@ public class FunctionParameters {
                 spinnerCount.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, Integer.MAX_VALUE, 11));
             }
         });
-        CanselButton.setOnAction(event -> {
+        CancelButton.setOnAction(event -> {
             Stage stage = (Stage) OKButton.getScene().getWindow();
             stage.close();
         });
@@ -80,10 +81,10 @@ public class FunctionParameters {
     }
 
     public static ArrayTabulatedFunction FunctionParameterShow() {
-        FXMLLoader fxmlLoader = new FXMLLoader(FunctionParameters.class.getResource("FunctionParameter.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(FunctionParameters.class.getResource("FunctionParameters.fxml"));
         Parent root = null;
         try {
-            root = (Parent) fxmlLoader.load();
+            root = fxmlLoader.load();
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
@@ -91,9 +92,7 @@ public class FunctionParameters {
         stage.setTitle("Tabulate");
         stage.setScene(new Scene(root));
         stage.setResizable(false);
-        stage.setOnCloseRequest(event -> {
-            event.consume();
-        });
+        stage.setOnCloseRequest(Event::consume);
         stage.showAndWait();
         return arrayTabulatedFunction;
     }
