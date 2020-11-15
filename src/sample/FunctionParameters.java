@@ -58,10 +58,11 @@ public class FunctionParameters {
                 //поменять по заданию 2
                 tabulatedFunction = new ArrayTabulatedFunction(leftBorder, rightBorder, pointsCounter);
                 Stage stage = (Stage) OKButton.getScene().getWindow();
+                //stage.close();
                 stage.close();
             } catch (NumberFormatException e) {
-
             } catch (IllegalArgumentException e) {
+                Error_message.errorShow();
                 Left_Domain_field.setText("0");
                 Right_Domain_field.setText("10");
                 spinnerCount.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, Integer.MAX_VALUE, 11));
@@ -69,7 +70,8 @@ public class FunctionParameters {
         });
         CancelButton.setOnAction(event -> {
             Stage stage = (Stage) OKButton.getScene().getWindow();
-            stage.close();
+            //stage.close();
+            stage.hide();
         });
     }
     public double getLeftDomainBorder(){

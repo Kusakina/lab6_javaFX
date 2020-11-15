@@ -95,7 +95,10 @@ public class Sample {
         Y_values.prefWidthProperty().bind(pointTableView.widthProperty().divide(2));
 
         new_file_menu.setOnAction(event -> {
+            try{pointTableView.getItems().clear();
+            } catch (Exception e){}
             tabulatedFunction =FunctionParameters.FunctionParameterShow();
+
             for (int i = 0; i< tabulatedFunction.getPointCount(); ++i){
                 pointTableView.getItems().add(tabulatedFunction.getPoint(i));
             }
@@ -108,10 +111,19 @@ public class Sample {
                 y = Double.parseDouble(Y_field.getText());
                 FunctionPoint xy = new FunctionPoint(x, y);
                 try {
+                    int index = 0;
                     tabulatedFunction.addPoint(xy);
-                    pointTableView.getItems().add(xy);
+                    for (;!tabulatedFunction.getPoint(index).equals(xy);++index);
+                    for (; index< tabulatedFunction.getPointCount(); ++index){
+                       try {
+                           pointTableView.getItems().remove(index);
+                       } catch (Exception e){}
+                        pointTableView.getItems().add(index, tabulatedFunction.getPoint(index));
+                    }
+
                 } catch (InappropriateFunctionPointException e) {
                     e.printStackTrace();
+                    Error_message.errorShow();
                 }
                 //Stage stage = (Stage) AddButton.getScene().getWindow();
             } catch (NumberFormatException e) {
