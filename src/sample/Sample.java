@@ -3,140 +3,234 @@ package sample;
 import functions.FunctionPoint;
 import functions.FunctionPointIndexOutOfBoundsException;
 import functions.InappropriateFunctionPointException;
-import functions.TabulatedFunction;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.converter.DoubleStringConverter;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class Sample {
-    private double x;
-    private double y;
-    @FXML
-    private ResourceBundle resources;
+public class Sample implements Initializable {
 
     @FXML
-    private URL location;
+    private Button deleteButton;
 
     @FXML
-    private Button DeleteButton;
+    private Button addPointButton;
 
     @FXML
-    private Button AddButton;
+    private MenuItem newFileMenuItem;
 
     @FXML
-    private Menu File_menu;
+    private MenuItem loadFileMenuItem;
 
     @FXML
-    private MenuItem new_file_menu;
+    private MenuItem saveFileMenuItem;
 
     @FXML
-    private MenuItem open_file_menu;
+    private MenuItem saveFileAsMenuItem;
 
     @FXML
-    private MenuItem save_file_menu;
+    private MenuItem closeMenuItem;
 
     @FXML
-    private MenuItem sava_file_us_menu;
+    private Menu loadAndTabulateMenu;
 
     @FXML
-    private MenuItem close_menu;
+    private TextField xTextField;
 
     @FXML
-    private Menu Tabulate_menu;
+    private TextField yTextField;
 
     @FXML
-    private MenuItem download_menu;
+    private TableView<FunctionPoint> pointsTableView;
 
     @FXML
-    private MenuItem tabulate_menu;
+    private TableColumn<FunctionPoint, Double> xValuesTableColumn;
 
     @FXML
-    private TextField X_field;
+    private TableColumn<FunctionPoint,Double> yValuesTableColumn;
+
+    private Stage getWindow() {
+        return (Stage) addPointButton.getScene().getWindow();
+    }
+    
+    private FileTabulatedFunction fileTabulatedFunction;
+
+    private FunctionParametersDialog functionParametersDialog;
+
+    private FileChooser fileChooser;
 
     @FXML
-    private TextField Y_field;
+    public void initialize(URL location, ResourceBundle resourceBundle) {
+        this.fileTabulatedFunction = new FileTabulatedFunction();
 
-    @FXML
-    private AnchorPane scroller;
+        this.functionParametersDialog = new FunctionParametersDialog();
 
-    @FXML
-    private TableColumn<FunctionPoint, Double> X_values;
-    @FXML
-    private TableView<FunctionPoint> pointTableView;
+        this.fileChooser = new FileChooser();
 
-    @FXML
-    private TableColumn<FunctionPoint,Double> Y_values;
-    private static TabulatedFunction tabulatedFunction = null;
+        initializePointsTableView();
 
-    @FXML
-    void initialize() {
-        pointTableView.setEditable(true);
-        X_values.setCellValueFactory( new PropertyValueFactory<>("abs"));
-        Y_values.setCellValueFactory( new PropertyValueFactory<>("ord"));
-        Y_values.setEditable(true);
+        initializeMenus();
 
-        Y_values.setOnEditCommit(yEditEvent -> {
+        initializeButtons();
+    }
+    
+    private void updatePointTableView() {
+    	
+		pointsTableView.getItems().clear();
+		for (int i = 0; i < fileTabulatedFunction.getPointCount(); ++i){
+			pointsTableView.getItems().add(fileTabulatedFunction.getPoint(i));
+		}
+	}
+	
+	private void saveFileAction() {
+		if (!fileTabulatedFunction.isFileNameAssigned()) {
+            saveFileAsAction();
+        } else {
+            try {
+                fileTabulatedFunction.saveFunction();
+            } catch (IOException e) {
+                ErrorDialog.processError(e, "Ошибка при сохранении документа");
+            }
+        }
+	}
+
+	private void saveFileAsAction() {
+	    try {
+            File saveFile = fileChooser.showSaveDialog(getWindow());
+            fileTabulatedFunction.saveFunctionAs(saveFile.getAbsolutePath());
+        } catch (IOException e) {
+            ErrorDialog.processError(e, "Ошибка при сохранении документа в выбранный файл");
+        }
+	}
+
+    private void initializeButtons() {
+        addPointButton.setOnAction(event -> {
+            try {
+                double x = Double.parseDouble(xTextField.getText());
+                double y = Double.parseDouble(yTextField.getText());
+                FunctionPoint xy = new FunctionPoint(x, y);
+                try {
+                    fileTabulatedFunction.addPoint(xy);
+    			    updatePointTableView();
+                } catch (InappropriateFunctionPointException e) {
+                    ErrorDialog.processError(e, "Ошибка при добавлении точки");
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        });
+        deleteButton.setOnAction(event -> {
+            try {
+                int index = pointsTableView.getSelectionModel().getSelectedIndex();
+                fileTabulatedFunction.deletePoint(index);
+                pointsTableView.getItems().remove(index);
+            } catch (FunctionPointIndexOutOfBoundsException | IllegalStateException e){
+                ErrorDialog.processError(e, "Ошибка при удалении точки");
+            }
+
+        });
+    }
+
+    private void initializeMenus() {
+        newFileMenuItem.setOnAction(event -> {
+            if (cancelBecauseNotSaved()) return;
+            Optional<TabulatedFunctionParameters> params = functionParametersDialog.showAndWait();
+
+        	params.ifPresent(tabulatedFunctionParameters -> {
+        	    try {
+                    fileTabulatedFunction.newFunction(
+                            tabulatedFunctionParameters.leftBorderX,
+                            tabulatedFunctionParameters.rightBorderX,
+                            tabulatedFunctionParameters.pointCount);
+                    updatePointTableView();
+                } catch (IllegalArgumentException e) {
+                    ErrorDialog.processError(e, "Ошиба при создании новой фунии");
+                }
+            });
+	    }
+	    );
+
+        saveFileMenuItem.setOnAction(event -> saveFileAction());
+
+        saveFileAsMenuItem.setOnAction(event -> saveFileAsAction());
+
+        loadFileMenuItem.setOnAction(event -> {
+            if (cancelBecauseNotSaved()) return;
+
+            File selectedFile = fileChooser.showOpenDialog(getWindow());
+            if (null != selectedFile) {
+                try {
+                    fileTabulatedFunction.loadFunction(selectedFile.getAbsolutePath());
+                    updatePointTableView();
+                } catch (InappropriateFunctionPointException | IOException e) {
+                    ErrorDialog.processError(e, "Ошибка при загрузке функии из документа");
+                }
+            }
+
+        });
+
+        closeMenuItem.setOnAction(event -> getWindow().close());
+
+        loadAndTabulateMenu.setOnAction(event -> {
+            throw new UnsupportedOperationException();
+        });
+    }
+
+    void onCloseAction(WindowEvent windowEvent) {
+        if (cancelBecauseNotSaved()) {
+            windowEvent.consume();
+        }
+    }
+
+    private boolean cancelBecauseNotSaved() {
+        if (fileTabulatedFunction.isModified()) {
+            Optional<ButtonType> result = new Alert(
+                Alert.AlertType.CONFIRMATION,
+                "У вас не сохранена функция, хотите ли сохранить?",
+                ButtonType.CANCEL, ButtonType.NO, ButtonType.YES
+            ).showAndWait();
+
+            if (result.isPresent()) {
+                ButtonType buttonType = result.get();
+
+                if (ButtonType.CANCEL == buttonType) return true;
+
+                if (ButtonType.YES == buttonType) {
+                    saveFileAction();
+                }
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void initializePointsTableView() {
+        pointsTableView.setEditable(true);
+        xValuesTableColumn.setCellValueFactory( new PropertyValueFactory<>("abs"));
+        yValuesTableColumn.setCellValueFactory( new PropertyValueFactory<>("ord"));
+        yValuesTableColumn.setEditable(true);
+
+        yValuesTableColumn.setOnEditCommit(yEditEvent -> {
             try {
                 double y = yEditEvent.getNewValue();
                 int index = yEditEvent.getTablePosition().getRow();
-                tabulatedFunction.setPointY(index, y);
-            } catch (NumberFormatException e) {
-            }
-
-        });
-        Y_values.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-        X_values.prefWidthProperty().bind(pointTableView.widthProperty().divide(2));
-        Y_values.prefWidthProperty().bind(pointTableView.widthProperty().divide(2));
-
-        new_file_menu.setOnAction(event -> {
-            try{pointTableView.getItems().clear();
-            } catch (Exception e){}
-            tabulatedFunction =FunctionParameters.FunctionParameterShow();
-
-            for (int i = 0; i< tabulatedFunction.getPointCount(); ++i){
-                pointTableView.getItems().add(tabulatedFunction.getPoint(i));
-            }
-
-
-        });
-        AddButton.setOnAction(event -> {
-            try {
-                x = Double.parseDouble(X_field.getText());
-                y = Double.parseDouble(Y_field.getText());
-                FunctionPoint xy = new FunctionPoint(x, y);
-                try {
-                    int index = 0;
-                    tabulatedFunction.addPoint(xy);
-                    for (;!tabulatedFunction.getPoint(index).equals(xy);++index);
-                    for (; index< tabulatedFunction.getPointCount(); ++index){
-                       try {
-                           pointTableView.getItems().remove(index);
-                       } catch (Exception e){}
-                        pointTableView.getItems().add(index, tabulatedFunction.getPoint(index));
-                    }
-
-                } catch (InappropriateFunctionPointException e) {
-                    e.printStackTrace();
-                    Error_message.errorShow();
-                }
-                //Stage stage = (Stage) AddButton.getScene().getWindow();
-            } catch (NumberFormatException e) {
+                fileTabulatedFunction.setPointY(index, y);
+            } catch (NumberFormatException ignored) {
             }
         });
-        DeleteButton.setOnAction(event -> {
-            try {
-                int index = pointTableView.getSelectionModel().getSelectedIndex();
-                tabulatedFunction.deletePoint(index);
-                pointTableView.getItems().remove(index);
-            }catch (FunctionPointIndexOutOfBoundsException|IllegalStateException e ){
-
-            }
-
-        });
-    }}
+        yValuesTableColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        xValuesTableColumn.prefWidthProperty().bind(pointsTableView.widthProperty().divide(2));
+        yValuesTableColumn.prefWidthProperty().bind(pointsTableView.widthProperty().divide(2));
+    }
+}

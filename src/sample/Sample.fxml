@@ -4,44 +4,60 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="445.0" prefWidth="500.0" style="-fx-background-color: #FA8072;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Sample">
-   <children>
-      <Button fx:id="DeleteButton" layoutX="51.0" layoutY="399.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="Delete point" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="51.0">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Button>
-      <Button fx:id="AddButton" layoutX="334.0" layoutY="399.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="Add point" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="54.0">
-         <font>
-            <Font name="System Bold Italic" size="12.0" />
-         </font>
-      </Button>
-      <MenuBar blendMode="LIGHTEN" cache="true" layoutY="30.0" prefHeight="0.0" prefWidth="500.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
-        <menus>
-          <Menu fx:id="File_menu" mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem fx:id="new_file_menu" mnemonicParsing="false" text="New file" />
-                <MenuItem fx:id="open_file_menu" mnemonicParsing="false" text="Open file" />
-                <MenuItem fx:id="save_file_menu" mnemonicParsing="false" text="Save file" />
-                <MenuItem fx:id="sava_file_us_menu" mnemonicParsing="false" text="Save file as" />
-                <MenuItem fx:id="close_menu" mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu fx:id="Tabulate_menu" mnemonicParsing="false" text="Tabulate">
-            <items>
-              <MenuItem fx:id="download_menu" mnemonicParsing="false" text="Download" />
-                <MenuItem fx:id="tabulate_menu" mnemonicParsing="false" text="Tabulate" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <TextField fx:id="X_field" layoutX="319.0" layoutY="361.0" prefHeight="25.0" prefWidth="71.0" promptText="X" AnchorPane.bottomAnchor="59.0" AnchorPane.rightAnchor="110.0" />
-      <TextField fx:id="Y_field" layoutX="416.0" layoutY="361.0" prefHeight="18.0" prefWidth="71.0" promptText="Y" AnchorPane.bottomAnchor="59.0" AnchorPane.rightAnchor="13.0" />
-       <TableView fx:id="pointTableView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="303.0" prefWidth="460.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="25">
-           <columns>
-               <TableColumn fx:id="X_values" maxWidth="Infinity" prefWidth="230" text="X" />
-               <TableColumn fx:id="Y_values" maxWidth="Infinity" prefWidth="230" text="Y" />
-           </columns>
-       </TableView>
-   </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="445.0"
+            prefWidth="500.0" style="-fx-background-color: #FA8072;" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Sample">
+    <Button fx:id="deleteButton" layoutX="51.0" layoutY="399.0" maxHeight="1.7976931348623157E308"
+            maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0"
+            text="Delete point" AnchorPane.bottomAnchor="21.0" AnchorPane.leftAnchor="51.0">
+        <font>
+          <Font name="System Bold" size="12.0"/>
+        </font>
+    </Button>
+    <Button fx:id="addPointButton" layoutX="334.0" layoutY="399.0" maxHeight="1.7976931348623157E308"
+            maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0"
+            text="Add point" AnchorPane.bottomAnchor="21.0" AnchorPane.rightAnchor="54.0">
+        <font>
+          <Font name="System Bold Italic" size="12.0"/>
+        </font>
+    </Button>
+    <!--<HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">-->
+        <!--<MenuBar blendMode="LIGHTEN" cache="true" layoutY="30.0" prefHeight="0.0" prefWidth="500.0"-->
+                 <!--HBox.hgrow="ALWAYS">-->
+            <!--<Menu mnemonicParsing="false" text="File">-->
+                <!--<MenuItem fx:id="newFileMenuItem" mnemonicParsing="false" text="New file"/>-->
+                <!--<MenuItem fx:id="loadFileMenuItem" mnemonicParsing="false" text="Load file"/>-->
+                <!--<MenuItem fx:id="saveFileMenuItem" mnemonicParsing="false" text="Save file"/>-->
+                <!--<MenuItem fx:id="saveFileAsMenuItem" mnemonicParsing="false" text="Save file as"/>-->
+                <!--<MenuItem fx:id="closeMenuItem" mnemonicParsing="false" text="Close"/>-->
+            <!--</Menu>-->
+            <!--<Menu fx:id="loadAndTabulateMenu" mnemonicParsing="false" text="Load and tabulate">-->
+            <!--</Menu>-->
+        <!--</MenuBar>-->
+    <!--</HBox>-->
+
+    <MenuBar blendMode="LIGHTEN" cache="true" layoutY="30.0" prefHeight="0.0" prefWidth="500.0"
+             AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
+        <Menu mnemonicParsing="false" text="File">
+            <MenuItem fx:id="newFileMenuItem" mnemonicParsing="false" text="New file"/>
+            <MenuItem fx:id="loadFileMenuItem" mnemonicParsing="false" text="Load file"/>
+            <MenuItem fx:id="saveFileMenuItem" mnemonicParsing="false" text="Save file"/>
+            <MenuItem fx:id="saveFileAsMenuItem" mnemonicParsing="false" text="Save file as"/>
+            <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" text="Close"/>
+        </Menu>
+        <Menu fx:id="loadAndTabulateMenu" mnemonicParsing="false" text="Load and tabulate">
+        </Menu>
+    </MenuBar>
+
+    <TextField fx:id="xTextField" layoutX="319.0" layoutY="361.0" prefHeight="25.0" prefWidth="71.0" promptText="X"
+               AnchorPane.bottomAnchor="59.0" AnchorPane.rightAnchor="110.0"/>
+    <TextField fx:id="yTextField" layoutX="416.0" layoutY="361.0" prefHeight="18.0" prefWidth="71.0" promptText="Y"
+               AnchorPane.bottomAnchor="59.0" AnchorPane.rightAnchor="13.0"/>
+    <TableView fx:id="pointsTableView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="303.0" prefWidth="460.0"
+               AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="35">
+        <columns>
+            <TableColumn fx:id="xValuesTableColumn" maxWidth="Infinity" prefWidth="230" text="X"/>
+            <TableColumn fx:id="yValuesTableColumn" maxWidth="Infinity" prefWidth="230" text="Y"/>
+        </columns>
+    </TableView>
 </AnchorPane>

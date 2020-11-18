@@ -4,28 +4,25 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception{
-        FXMLLoader fxmlloader = new FXMLLoader(getClass().getResource("Sample.fxml"));
-        Parent root = null;
-        try {
-            root = fxmlloader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void start(Stage stage) throws Exception {
+        FXMLLoader loader = Utils.createFxmlLoader(getClass(), "Sample");
+
+        Parent root = loader.load();
+
         stage.setTitle("TabulatedFunction");
 
         stage.setScene(new Scene(root, 500, 445));
         stage.setMinWidth(500);
         stage.setMinHeight(445);
         stage.setResizable(true);
+
+        Sample controller = loader.getController();
+        stage.setOnCloseRequest(controller::onCloseAction);
 
         stage.show();
     }

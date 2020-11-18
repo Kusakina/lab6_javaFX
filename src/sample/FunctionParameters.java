@@ -1,104 +1,63 @@
 package sample;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import functions.ArrayTabulatedFunction;
-import functions.TabulatedFunction;
-import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
-public class FunctionParameters {
+import java.net.URL;
+import java.util.ResourceBundle;
 
-    static TabulatedFunction tabulatedFunction = null;
-    private static double leftBorder;
-    private static double rightBorder;
-    private static int pointsCounter;
+public class FunctionParameters implements Initializable {
 
     @FXML
-    private ResourceBundle resources;
+    private TextField leftDomainTextField;
 
     @FXML
-    private URL location;
+    private TextField rightDomainTextField;
 
     @FXML
-    private TextField Left_Domain_field;
+    private Spinner<Integer> pointsCountSpinner;
 
-    @FXML
-    private TextField Right_Domain_field;
-
-    @FXML
-    private Button OKButton;
-
-    @FXML
-    private Button CancelButton;
-
-    @FXML
-    private Spinner<Integer> spinnerCount;
-
-    @FXML
-    void initialize() {
-        {
-            spinnerCount.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, Integer.MAX_VALUE, 11));
-        }
-        OKButton.setOnAction(event -> {
-            try {
-                leftBorder = Double.parseDouble(Left_Domain_field.getText());
-                rightBorder = Double.parseDouble(Right_Domain_field.getText());
-                pointsCounter = spinnerCount.getValue();
-                //поменять по заданию 2
-                tabulatedFunction = new ArrayTabulatedFunction(leftBorder, rightBorder, pointsCounter);
-                Stage stage = (Stage) OKButton.getScene().getWindow();
-                //stage.close();
-                stage.close();
-            } catch (NumberFormatException e) {
-            } catch (IllegalArgumentException e) {
-                Error_message.errorShow();
-                Left_Domain_field.setText("0");
-                Right_Domain_field.setText("10");
-                spinnerCount.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, Integer.MAX_VALUE, 11));
-            }
-        });
-        CancelButton.setOnAction(event -> {
-            Stage stage = (Stage) OKButton.getScene().getWindow();
-            //stage.close();
-            stage.hide();
-        });
-    }
-    public double getLeftDomainBorder(){
-        return Double.parseDouble(Left_Domain_field.getText());
-    }
-    public double getRightDomainBorder(){
-        return Double.parseDouble(Right_Domain_field.getText());
-    }
-    public int getPointsCount(){
-        return spinnerCount.getValue();
+    private SpinnerValueFactory.IntegerSpinnerValueFactory pointsCountValueFactory;
+    
+    private TabulatedFunctionParameters parameters;
+    
+    TabulatedFunctionParameters getParameters() {
+    	return parameters;
     }
 
-    public static TabulatedFunction FunctionParameterShow() {
-        FXMLLoader fxmlLoader = new FXMLLoader(FunctionParameters.class.getResource("FunctionParameters.fxml"));
-        Parent root = null;
+    @FXML
+    public void initialize(URL location, ResourceBundle resources) {
+        pointsCountValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(2, Integer.MAX_VALUE);
+	    pointsCountSpinner.setValueFactory(pointsCountValueFactory);
+
+        setDefaultValues();
+    }
+
+    void setDefaultValues() {
+        leftDomainTextField.setText("1");
+        rightDomainTextField.setText("2");
+        pointsCountValueFactory.setValue(11);
+    }
+
+    boolean okAction() {
         try {
-            root = fxmlLoader.load();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+            double leftBorder = Double.parseDouble(leftDomainTextField.getText());
+            double rightBorder = Double.parseDouble(rightDomainTextField.getText());
+            int pointsCounter = pointsCountSpinner.getValue();
+
+            parameters = new TabulatedFunctionParameters(leftBorder, rightBorder, pointsCounter);
+            return true;
+        } catch (NumberFormatException e) {
+            ErrorDialog.processError(e, "Ошибка при указании параметров функии");
+            return false;
         }
-        Stage stage = new Stage();
-        stage.setTitle("Tabulate");
-        stage.setScene(new Scene(root));
-        stage.setResizable(false);
-        stage.setOnCloseRequest(Event::consume);
-        stage.showAndWait();
-        return tabulatedFunction;
+    }
+
+    void cancelAction() {
+        parameters = null;
     }
 }
 

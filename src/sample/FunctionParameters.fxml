@@ -7,23 +7,14 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: #20B2AA;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.FunctionParameters">
-   <children>
-      <TextField fx:id="Left_Domain_field" layoutX="137.0" layoutY="32.0" promptText="0" text="1" />
-      <TextField fx:id="Right_Domain_field" layoutX="137.0" layoutY="76.0" promptText="0" text="2" />
-      <Text fill="WHITE" layoutX="19.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Left domain border" />
-      <Text fill="WHITE" layoutX="15.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Right domain border" />
-      <Text fill="#f9fdf9" layoutX="33.0" layoutY="136.0" stroke="#e9e5e5" strokeType="OUTSIDE" strokeWidth="0.0" text="Points count" wrappingWidth="73.4505615234375" />
-      <Button fx:id="OKButton" layoutX="218.0" layoutY="161.0" mnemonicParsing="false" style="-fx-background-color: #20B2AA;" text="OK">
-         <font>
-            <Font name="System Bold Italic" size="12.0" />
-         </font>
-      </Button>
-      <Button fx:id="CancelButton" layoutX="44.0" layoutY="161.0" mnemonicParsing="false" style="-fx-background-color: #20B2AA;" text="Cancel">
-         <font>
-            <Font name="System Bold Italic" size="12.0" />
-         </font>
-      </Button>
-      <Spinner fx:id="spinnerCount" layoutX="137.0" layoutY="119.0" />
-   </children>
+<AnchorPane prefHeight="200.0" prefWidth="300.0" style="-fx-background-color: #20B2AA;"
+            xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sample.FunctionParameters">
+   <TextField fx:id="leftDomainTextField" layoutX="137.0" layoutY="32.0" promptText="0"/>
+   <TextField fx:id="rightDomainTextField" layoutX="137.0" layoutY="76.0" promptText="0"/>
+   <Text fill="WHITE" layoutX="19.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Left domain border"/>
+   <Text fill="WHITE" layoutX="15.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Right domain border"/>
+   <Text fill="#f9fdf9" layoutX="33.0" layoutY="136.0" stroke="#e9e5e5" strokeType="OUTSIDE" strokeWidth="0.0"
+         text="Points count" wrappingWidth="73.4505615234375"/>
+   <Spinner fx:id="pointsCountSpinner" layoutX="137.0" layoutY="119.0"/>
 </AnchorPane>
