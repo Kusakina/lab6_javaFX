@@ -36,7 +36,7 @@ public class FunctionLoader extends ClassLoader {
     protected Class<?> findClass(String className) throws ClassNotFoundException {
         try {
             byte[] classBytes= loadFileAsBytes(functionFile);
-            return defineClass(className, classBytes, 0,
+            return defineClass("functions.basic."+className, classBytes, 0,
                     classBytes.length);
         } catch (IOException e) {
             throw new ClassNotFoundException(

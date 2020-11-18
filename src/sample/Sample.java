@@ -1,8 +1,6 @@
 package sample;
 
-import functions.FunctionPoint;
-import functions.FunctionPointIndexOutOfBoundsException;
-import functions.InappropriateFunctionPointException;
+import functions.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -69,6 +67,7 @@ public class Sample implements Initializable {
     private FunctionParametersDialog functionParametersDialog;
 
     private FileChooser fileChooser;
+    private FunctionLoader functionLoader;
 
     @FXML
     public void initialize(URL location, ResourceBundle resourceBundle) {
@@ -77,6 +76,7 @@ public class Sample implements Initializable {
         this.functionParametersDialog = new FunctionParametersDialog();
 
         this.fileChooser = new FileChooser();
+        this.functionLoader = new FunctionLoader();
 
         initializePointsTableView();
 
@@ -126,7 +126,8 @@ public class Sample implements Initializable {
                 } catch (InappropriateFunctionPointException e) {
                     ErrorDialog.processError(e, "Ошибка при добавлении точки");
                 }
-            } catch (NumberFormatException ignored) {
+            } catch (NumberFormatException e) {
+                ErrorDialog.processError(e, "Введены некорректные координаты");
             }
         });
         deleteButton.setOnAction(event -> {
@@ -143,22 +144,22 @@ public class Sample implements Initializable {
 
     private void initializeMenus() {
         newFileMenuItem.setOnAction(event -> {
-            if (cancelBecauseNotSaved()) return;
-            Optional<TabulatedFunctionParameters> params = functionParametersDialog.showAndWait();
+                    if (cancelBecauseNotSaved()) return;
+                    Optional<TabulatedFunctionParameters> params = functionParametersDialog.showAndWait();
 
-        	params.ifPresent(tabulatedFunctionParameters -> {
-        	    try {
-                    fileTabulatedFunction.newFunction(
-                            tabulatedFunctionParameters.leftBorderX,
-                            tabulatedFunctionParameters.rightBorderX,
-                            tabulatedFunctionParameters.pointCount);
-                    updatePointTableView();
-                } catch (IllegalArgumentException e) {
-                    ErrorDialog.processError(e, "Ошиба при создании новой фунии");
+                    params.ifPresent(tabulatedFunctionParameters -> {
+                        try {
+                            fileTabulatedFunction.newFunction(
+                                    tabulatedFunctionParameters.leftBorderX,
+                                    tabulatedFunctionParameters.rightBorderX,
+                                    tabulatedFunctionParameters.pointCount);
+                            updatePointTableView();
+                        } catch (IllegalArgumentException e) {
+                            ErrorDialog.processError(e, "Ошиба при создании новой фунии");
+                        }
+                    });
                 }
-            });
-	    }
-	    );
+        );
 
         saveFileMenuItem.setOnAction(event -> saveFileAction());
 
@@ -182,8 +183,34 @@ public class Sample implements Initializable {
         closeMenuItem.setOnAction(event -> getWindow().close());
 
         loadAndTabulateMenu.setOnAction(event -> {
-            throw new UnsupportedOperationException();
+            if (cancelBecauseNotSaved()) return;
+
+            File selectedFile = fileChooser.showOpenDialog(getWindow());
+            if (null != selectedFile) {
+                try {
+                    Function functionToTabulate = functionLoader.loadFunction(selectedFile);
+
+                    Optional<TabulatedFunctionParameters> params = functionParametersDialog.showAndWait();
+
+                    params.ifPresent(tabulatedFunctionParameters -> {
+                        try {
+                            fileTabulatedFunction.tabulateFunction(
+                                    functionToTabulate,
+                                    tabulatedFunctionParameters.leftBorderX,
+                                    tabulatedFunctionParameters.rightBorderX,
+                                    tabulatedFunctionParameters.pointCount
+                            );
+                            updatePointTableView();
+                        } catch (IllegalArgumentException e) {
+                            ErrorDialog.processError(e, "Ошибка при табулировании функции");
+                        }
+                    });
+                } catch (IllegalAccessException | InstantiationException | ClassNotFoundException e) {
+                    ErrorDialog.processError(e, "Ошибка при загрузке функции");
+                }
+            }
         });
+        Utils.onAction(loadAndTabulateMenu);
     }
 
     void onCloseAction(WindowEvent windowEvent) {
